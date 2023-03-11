@@ -1,0 +1,19 @@
+@Transaction(false)
+    @Returns('boolean')
+    public async diagnose(ctx: Context, email: string, diagnosis:Diagnosis): Promise<boolean> {
+        const data: Uint8Array = await ctx.stub.getState(email);
+        const user: User = JSON.parse(data.toString()) as User;
+        user.medical.diagnosis.push(diagnosis)
+        const buffer: Buffer = Buffer.from(JSON.stringify(user));
+        await ctx.stub.putState(email, buffer);
+        return (true); 
+    }
+
+    @Transaction(false)
+    // @Returns('list')
+    public async getPatients(ctx: Context, email: string): Promise<Patients[]> {
+        const data: Uint8Array = await ctx.stub.getState(email);
+        const user: Doctor = JSON.parse(data.toString()) as Doctor;
+
+        return (user.patients); 
+    }

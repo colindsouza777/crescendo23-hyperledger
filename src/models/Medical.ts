@@ -9,8 +9,8 @@ import { Records } from './Records';
 @Object()
 export class Medical {
     @Property
-    public diagnosis : Diagnosis[];
+    public diagnosis : Diagnosis[] = [];
     @Property
-    public records : Records[];
+    public records : Records[] = [];
 
 }

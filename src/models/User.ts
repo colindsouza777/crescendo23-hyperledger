@@ -21,6 +21,6 @@ export class User {
     @Property()
     public medical : Medical;
     @Property()
-    public type: string[];
+    public type: string[] = ['patient'];
     
 }

@@ -4,9 +4,9 @@
  */
 
 import { Object, Property } from 'fabric-contract-api';
-
+import { User } from './User';
 @Object()
-export class Patients {
+export class Patients extends User{
 
     @Property()
     public permission: string[];

@@ -3,77 +3,90 @@
  */
 
 import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-api';
-import { Ehr } from '../ehr';
-import {Diagnosis} from '../models/Diagnosis'
-import { Doctor } from '../models/Doctor';
-import {User} from '../models/User'
-import {Patients} from '../models/Patients'
-
-// @Info({title: 'EhrContract', description: 'My Smart Contract' })
-export class EhrContract extends  Contract {
+import { Medical } from '../models/Medical';
+import { Doctor } from "../models/Doctor";
+import { Records } from '../models/Records';
+export class UserContract extends  Contract {
 
     @Transaction(false)
     @Returns('boolean')
-    public async diagnose(ctx: Context, email: string, diagnosis:Diagnosis): Promise<boolean> {
+    public async UserExists(ctx: Context, email: string): Promise<boolean> {
         const data: Uint8Array = await ctx.stub.getState(email);
-        const user: User = JSON.parse(data.toString()) as User;
-        user.medical.diagnosis.push(diagnosis)
+        return (!!data && data.length > 0);
+    }
+    @Transaction(true)
+    public async InitLedger(ctx : Context) {
+        const Users = [
+            {
+                email : "akmore90@gmail.com",
+            },
+            {
+                email : "colin@gmail.com",
+            },
+        ];
+   
+        for (const user of Users) {
+            
+            await ctx.stub.putState(user.email, Buffer.from(JSON.stringify(user)));
+            console.info(`Asset ${user.email} initialized`);
+        }
+    }
+
+    @Transaction()
+    public async createUser(ctx: Context, email: string ,medical:Medical): Promise<void> {
+        const exists: boolean = await this.UserExists(ctx, email);
+        if (exists) {
+            throw new Error(`The Doctor ${email} already exists`);
+        }
+        const user: Doctor = new Doctor();
+        user.email = email;
+        user.type = ["patient", 'doctor'];
         const buffer: Buffer = Buffer.from(JSON.stringify(user));
         await ctx.stub.putState(email, buffer);
-        return (true); 
     }
 
     @Transaction(false)
-    // @Returns('list')
-    public async getPatients(ctx: Context, email: string): Promise<Patients[]> {
+    @Returns('Doctor')
+    public async readUser(ctx: Context, email: string): Promise<Doctor> {
+        const exists: boolean = await this.UserExists(ctx, email);
+        if (!exists) {
+            throw new Error(`The Doctor ${email} does not exist`);
+        }
+        const data: Uint8Array = await ctx.stub.getState(email);
+        const Doctor: Doctor = JSON.parse(data.toString()) as Doctor;
+        return Doctor;
+    }
+
+    // @Transaction()
+    // public async updateUser(ctx: Context, UserId: string, newValue: string): Promise<void> {
+    //     const exists: boolean = await this.UserExists(ctx, UserId);
+    //     if (!exists) {
+    //         throw new Error(`The Doctor ${UserId} does not exist`);
+    //     }
+    //     const Doctor: Doctor = new Doctor();
+    //     Doctor.email = newValue;
+    //     const buffer: Buffer = Buffer.from(JSON.stringify(Doctor));
+    //     await ctx.stub.putState(UserId, buffer);
+    // }
+
+    public async insertUserMedicalRecord(ctx:Context , email :string, record:Records){
+        const exist : boolean = await this.UserExists(ctx,email);
+        if (!exist){
+            throw new Error(`The Doctor ${email} does not exist`);
+        }
         const data: Uint8Array = await ctx.stub.getState(email);
         const user: Doctor = JSON.parse(data.toString()) as Doctor;
-
-        return (user.patients); 
+        user.medical.records.push(record);
+        const buffer: Buffer = Buffer.from(JSON.stringify(user));
+        await ctx.stub.putState(email,buffer);
     }
-
     @Transaction()
-    public async createEhr(ctx: Context, ehrId: string, value: string): Promise<void> {
-        const exists: boolean = await this.ehrExists(ctx, ehrId);
-        if (exists) {
-            throw new Error(`The ehr ${ehrId} already exists`);
-        }
-        const ehr: Ehr = new Ehr();
-        ehr.value = value;
-        const buffer: Buffer = Buffer.from(JSON.stringify(ehr));
-        await ctx.stub.putState(ehrId, buffer);
-    }
-
-    @Transaction(false)
-    @Returns('Ehr')
-    public async readEhr(ctx: Context, ehrId: string): Promise<Ehr> {
-        const exists: boolean = await this.ehrExists(ctx, ehrId);
+    public async deleteUser(ctx: Context, email: string): Promise<void> {
+        const exists: boolean = await this.UserExists(ctx, email);
         if (!exists) {
-            throw new Error(`The ehr ${ehrId} does not exist`);
+            throw new Error(`The Doctor ${email} does not exist`);
         }
-        
-        return ehr;
-    }
-
-    @Transaction()
-    public async updateEhr(ctx: Context, ehrId: string, newValue: string): Promise<void> {
-        const exists: boolean = await this.ehrExists(ctx, ehrId);
-        if (!exists) {
-            throw new Error(`The ehr ${ehrId} does not exist`);
-        }
-        const ehr: Ehr = new Ehr();
-        ehr.value = newValue;
-        const buffer: Buffer = Buffer.from(JSON.stringify(ehr));
-        await ctx.stub.putState(ehrId, buffer);
-    }
-
-    @Transaction()
-    public async deleteEhr(ctx: Context, ehrId: string): Promise<void> {
-        const exists: boolean = await this.ehrExists(ctx, ehrId);
-        if (!exists) {
-            throw new Error(`The ehr ${ehrId} does not exist`);
-        }
-        await ctx.stub.deleteState(ehrId);
+        await ctx.stub.deleteState(email);
     }
 
 }
