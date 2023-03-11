@@ -3,6 +3,8 @@
  */
 
 import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-api';
+import { Diagnosis } from '../models/Diagnosis';
+import { Doctor } from '../models/Doctor';
 import { Medical } from '../models/Medical';
 import { Patients } from "../models/Patients";
 import { Records } from '../models/Records';
@@ -58,19 +60,7 @@ export class UserContract extends  Contract {
         return Patients;
     }
 
-    // @Transaction()
-    // public async updateUser(ctx: Context, UserId: string, newValue: string): Promise<void> {
-    //     const exists: boolean = await this.UserExists(ctx, UserId);
-    //     if (!exists) {
-    //         throw new Error(`The Patients ${UserId} does not exist`);
-    //     }
-    //     const Patients: Patients = new Patients();
-    //     Patients.email = newValue;
-    //     const buffer: Buffer = Buffer.from(JSON.stringify(Patients));
-    //     await ctx.stub.putState(UserId, buffer);
-    // }
-
-    public async insertUserMedicalRecord(ctx:Context , email :string, record:Records){
+    public async insertUserMedicalRecord(ctx:Context , email :string, record:Records):Promise<void>{
         const exist : boolean = await this.UserExists(ctx,email);
         if (!exist){
             throw new Error(`The Patients ${email} does not exist`);
@@ -80,6 +70,29 @@ export class UserContract extends  Contract {
         user.medical.records.push(record);
         const buffer: Buffer = Buffer.from(JSON.stringify(user));
         await ctx.stub.putState(email,buffer);
+    }
+
+    public async assignPermission(ctx:Context,patientEmail:string,doctorEmail:string):Promise<void>{
+        
+        let data: Uint8Array = await ctx.stub.getState(patientEmail);
+        const patient: Patients = JSON.parse(data.toString()) as Patients;
+        data: Uint8Array = await ctx.stub.getState(doctorEmail);
+        const doctor : Doctor = JSON.parse(data.toString()) as Doctor;
+        
+        patient.permission = [doctorEmail,...patient.permission];
+        doctor.patients = [patient,...doctor.patients];
+        
+        const patientBuffer : Buffer = Buffer.from(JSON.stringify(patient));
+        const doctorBuffer : Buffer = Buffer.from(JSON.stringify(doctor));
+
+        ctx.stub.putState(patientEmail,patientBuffer);
+        ctx.stub.putState(doctorEmail,doctorBuffer)
+    }
+
+    public async viewMedical(ctx:Context , patientEmail:string):Promise<Medical>{
+        let data: Uint8Array = await ctx.stub.getState(patientEmail);
+        const patient: Patients = JSON.parse(data.toString()) as Patients;
+        return patient.medical;
     }
     @Transaction()
     public async deleteUser(ctx: Context, email: string): Promise<void> {
