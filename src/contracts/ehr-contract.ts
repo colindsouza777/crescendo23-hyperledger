@@ -3,10 +3,10 @@
  */
 
 import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-api';
-import { Ehr } from './ehr';
+import { Ehr } from '../ehr';
 
 @Info({title: 'EhrContract', description: 'My Smart Contract' })
-export class EhrContract extends Contract {
+export class EhrContract extends  Contract {
 
     @Transaction(false)
     @Returns('boolean')
