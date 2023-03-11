@@ -14,10 +14,6 @@ export class DoctorContract extends  Contract {
         return (!!data && data.length > 0);
     }
     public async createDoctor(ctx:Context , email:string) :Promise<void>{
-        const exists : boolean = await this.UserExists(ctx,email);
-        if (exists) {
-            throw new Error(`The Doctor ${email} already exists`);
-        }
         const doctor: Doctor = new Doctor();
         doctor.type.push("doctor")
         const buffer :Buffer = Buffer.from(JSON.stringify(doctor));
