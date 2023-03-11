@@ -3,22 +3,20 @@
  */
 
 import { Object, Property } from 'fabric-contract-api';
-import { Medical } from './Medical';
+
 @Object()
-export class User {
+export class Diagnosis {
 
     @Property()
     public value: string;
     @Property()
-    public email : string;
-    @Property()
     public name :string;
     @Property()
-    public age : number;
+    public description : string;
     @Property()
-    public sex : string;
+    public doctor : string;
     @Property()
-    public blood_group : string;
+    public docs : string[];
     @Property()
-    public medical : Medical;
+    public timestamp : string;
 }
