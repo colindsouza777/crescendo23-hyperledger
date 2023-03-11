@@ -33,7 +33,7 @@ export class PatientsContracts extends  Contract {
         }
     }
 
-    public async createUser(ctx: Context, email: string ,medical:Medical): Promise<void> {
+    public async createUser(ctx: Context, email: string ): Promise<void> {
         const exists: boolean = await this.UserExists(ctx, email);
         if (exists) {
             throw new Error(`The Patients ${email} already exists`);
