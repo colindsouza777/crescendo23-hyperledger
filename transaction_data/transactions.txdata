@@ -1,0 +1,63 @@
+[
+    {
+        "transactionName": "readUser",
+        "transactionLabel": "Reading Patient",
+        "arguments": [
+            "akmore90@gmail.com"
+        ]
+    },
+    {
+        "transactionName": "insertUserMedicalRecord",
+        "transactionLabel": "Inserting User Medical Record",
+        "arguments": [
+            "akmore90@gmail.com",
+            {
+                "name" : "Something",
+                "docs" : ["doc1","doc2"],
+                "timestamp" : "someday"
+            }
+        ]
+    },
+    {
+        "transactionName": "InitLedger",
+        "transactionLabel": "InitLedger",
+        "arguments": []   
+    },
+    {
+        "transactionName": "assignPermission",
+        "transactionLabel": "Assigining Permission",
+        "arguments": [
+            "akmore90@gmail.com",
+            "colin@gmail.com"
+        ]
+    },
+    {
+        "transactionName": "viewMedical",
+        "transactionLabel": "view Medical details",
+        "arguments": [
+            "akmore90@gmail.com"
+        ]
+    },
+    {
+        "transactionName": "readUser",
+        "transactionLabel": "Reading Doctors data",
+        "arguments": [
+            "colin@gmail.com"
+        ]
+    },
+    {
+        "transactionName": "diagnose",
+        "transactionLabel": "Doctor Diagnose",
+        "arguments": [
+            "akmore90@gmail.com",
+            {
+              "name" : "some",
+              "description" : "some discriptoin",
+              "doctor" : "asdf",
+              "docs" : ["Doc1","Doc2"],
+              "timestamp" : "something"
+            }
+        ]
+    }
+    
+]

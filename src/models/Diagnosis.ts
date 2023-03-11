@@ -2,19 +2,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Object, Property } from 'fabric-contract-api';
-
-@Object()
 export class Diagnosis {
 
-    @Property()
-    public name :string;
-    @Property()
-    public description : string;
-    @Property()
-    public doctor : string;
-    @Property()
-    public docs : string[];
-    @Property()
-    public timestamp : string;
+    public name :string = "";
+    
+    public description : string = "";
+    
+    public doctor : string = "";
+    
+    public docs : string[] = ["dummy"];
+    
+    public timestamp : string = "";
 }

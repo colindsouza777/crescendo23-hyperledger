@@ -2,15 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-api';
-import { Doctor } from "../models/Doctor";
+import { Context, Contract } from 'fabric-contract-api';
+import { Doctor } from '../models/Doctor';
 import { Patients } from '../models/Patients';
 import { Diagnosis } from '../models/Diagnosis';
 import { Medical } from '../models/Medical';
-export class UserContract extends  Contract {
+export class DoctorContract extends  Contract {
 
-    @Transaction(false)
-    @Returns('boolean')
     public async UserExists(ctx: Context, email: string): Promise<boolean> {
         const data: Uint8Array = await ctx.stub.getState(email);
         return (!!data && data.length > 0);
@@ -22,11 +20,9 @@ export class UserContract extends  Contract {
         }
         const doctor: Doctor = new Doctor();
         doctor.type.push("doctor")
-        const buffer:Buffer = Buffer.from(JSON.stringify(doctor));
-        await ctx.stub.putState(buffer)
+        const buffer :Buffer = Buffer.from(JSON.stringify(doctor));
+        await ctx.stub.putState(email,buffer)
     }
-    @Transaction(false)
-    @Returns('Doctor')
     public async readUser(ctx: Context, email: string): Promise<Doctor> {
         const exists: boolean = await this.UserExists(ctx, email);
         if (!exists) {
@@ -36,7 +32,6 @@ export class UserContract extends  Contract {
         const Doctor: Doctor = JSON.parse(data.toString()) as Doctor;
         return Doctor;
     }
-    @Transaction()
     public async deleteUser(ctx: Context, email: string): Promise<void> {
         const exists: boolean = await this.UserExists(ctx, email);
         if (!exists) {
@@ -54,7 +49,6 @@ export class UserContract extends  Contract {
         return true; 
     }
 
-    @Transaction(false)
     public async getPatients(ctx: Context, email: string): Promise<Patients[]> {
         const data: Uint8Array = await ctx.stub.getState(email);
         const user: Doctor = JSON.parse(data.toString()) as Doctor;
