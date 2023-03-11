@@ -3,7 +3,7 @@
         "transactionName": "readUser",
         "transactionLabel": "Reading Patient",
         "arguments": [
-            "akmore90@gmail.com"
+            "colin@gmail.com"
         ]
     },
     {
@@ -84,6 +84,13 @@
         "transactionLabel": "Creating Doctor",
         "arguments": [
             "akmore90@gmail.com"
+        ]
+    },{
+        "transactionName": "assignPermission",
+        "transactionLabel": "Assigin something",
+        "arguments": [
+            "akmore90@gmail.com",
+            "colin@gmail.com"
         ]
     }
     

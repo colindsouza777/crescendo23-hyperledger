@@ -8,5 +8,6 @@ import { Patients } from './Patients';
 export class Doctor extends User {
 
     public patients: Patients[] = [Object()];
+    public permission: string[] = [""];
 
 }

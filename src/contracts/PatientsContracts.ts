@@ -68,6 +68,20 @@ export class PatientsContracts extends  Contract {
         await ctx.stub.putState(email,buffer);
     }
 
+    public async assignPermission(ctx:Context , patientEmail : string,doctorEmail:string):Promise<void>{
+        const patient = await ctx.stub.getState(patientEmail);
+        const doctor = await ctx.stub.getState(doctorEmail);
+
+        const patientData:Patients = JSON.parse(patient.toString());
+        const doctorData:Doctor = JSON.parse(doctor.toString());
+
+        patientData.permission.push(doctorEmail);
+        doctorData.patients.push(patientData);
+
+        await ctx.stub.putState(patientEmail,Buffer.from(JSON.stringify(patientData)));
+        await ctx.stub.putState(doctorEmail,Buffer.from(JSON.stringify(doctorData)));
+
+    }
     public async viewMedical(ctx:Context , patientEmail:string):Promise<Medical>{
         let data: Uint8Array = await ctx.stub.getState(patientEmail);
         const patient: Patients = JSON.parse(data.toString()) as Patients;

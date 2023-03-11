@@ -14,9 +14,10 @@ export class DoctorContract extends  Contract {
         return (!!data && data.length > 0);
     }
     public async createDoctor(ctx:Context , email:string) :Promise<void>{
-        const doctor: Doctor = new Doctor();
+        const data: Uint8Array = await ctx.stub.getState(email);
+        const doctor: Doctor = JSON.parse(data.toString()) as Doctor;
         doctor.type.push("doctor")
-        const buffer :Buffer = Buffer.from(JSON.stringify(doctor));
+        const buffer  = Buffer.from(JSON.stringify(doctor));
         await ctx.stub.putState(email,buffer)
     }
     public async readUser(ctx: Context, email: string): Promise<Doctor> {
@@ -40,7 +41,7 @@ export class DoctorContract extends  Contract {
         const data: Uint8Array = await ctx.stub.getState(patientEmail);
         const patient: Patients = JSON.parse(data.toString()) as Patients;
         patient.medical.diagnosis.push(diagnosis)
-        const buffer: Buffer = Buffer.from(JSON.stringify(patient));
+        const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientEmail, buffer);
         return true; 
     }
