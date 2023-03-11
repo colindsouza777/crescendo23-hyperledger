@@ -10,6 +10,5 @@ export class User {
     @Property()
     public value: string;
     public email : string;
-    
-
+    public 
 }
