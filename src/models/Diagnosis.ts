@@ -8,8 +8,6 @@ import { Object, Property } from 'fabric-contract-api';
 export class Diagnosis {
 
     @Property()
-    public value: string;
-    @Property()
     public name :string;
     @Property()
     public description : string;
