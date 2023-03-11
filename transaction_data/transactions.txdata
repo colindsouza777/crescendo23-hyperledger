@@ -58,6 +58,33 @@
               "timestamp" : "something"
             }
         ]
+    },
+    {
+        "transactionName": "getPatients",
+        "transactionLabel": "Get Patient Details for Doctor",
+        "arguments": [
+            "akmore90@gmail.com"
+        ]
+    },
+    {
+        "transactionName": "getMedical",
+        "transactionLabel": "Geting medical records",
+        "arguments": [
+            "akmore90@gmail.com"
+        ]
+    },
+    {
+        "transactionName": "readUser",
+        "transactionLabel": "Reading Doctors Data",
+        "arguments": [
+            "akmore90@gmail.com"
+        ]
+    },{
+        "transactionName": "createDoctor",
+        "transactionLabel": "Creating Doctor",
+        "arguments": [
+            "akmore90@gmail.com"
+        ]
     }
     
 ]
